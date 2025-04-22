@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPL Power-Up: A Guide for Observability Heroes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .content-section {
+            background-color: white;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        }
+        .code-block {
+            background-color: #1f2937; /* gray-800 */
+            color: #d1d5db; /* gray-300 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.5rem; /* mt-2 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        /* Ensure preformatted text respects newlines and whitespace */
+        .code-block pre {
+           white-space: pre;
+           margin: 0; /* Remove default pre margins */
+           color: inherit; /* Inherit color from .code-block */
+           font-family: inherit; /* Inherit font from .code-block */
+           font-size: inherit; /* Inherit font size */
+        }
+        .output-block {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-700 */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.5rem; /* mt-2 */
+            margin-bottom: 1rem; /* mb-4 */
+            border-left: 4px solid #6b7280; /* border-l-4 border-gray-500 */
+        }
+        /* Ensure preformatted text respects newlines */
+        .output-block pre {
+           white-space: pre;
+           margin: 0; /* Remove default pre margins */
+        }
+        h2 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1rem; /* mb-4 */
+            color: #111827; /* gray-900 */
+            border-bottom: 2px solid #e5e7eb; /* border-b-2 border-gray-200 */
+            padding-bottom: 0.5rem; /* pb-2 */
+        }
+        h3 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            color: #1f2937; /* gray-800 */
+        }
+        p, li {
+            color: #4b5563; /* gray-600 */
+            line-height: 1.6; /* leading-relaxed */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        strong {
+            color: #1f2937; /* gray-800 */
+            font-weight: 600;
+        }
+        /* Styling for inline code ONLY (not inside code blocks) */
+        p code, li code {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #ef4444; /* red-500 */
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+        }
+        .collapsible-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding-left: 1rem; /* pl-4 */
+            margin-top: 0.5rem; /* Add some space when expanded */
+        }
+        .collapsible-content.open {
+            max-height: 1500px; /* Increased max-height */
+            transition: max-height 0.5s ease-in;
+        }
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        .arrow.down {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-lg shadow-lg mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">PPL Power-Up: A Guide for Observability Heroes</h1>
+            <p class="text-lg text-indigo-100">Master Piped Processing Language to Conquer Your Logs!</p>
+        </header>
+
+        <article>
+            <section class="content-section">
+                <h2>🚀 Welcome, Observability Hero!</h2>
+                <p>Drowning in logs? Struggling to pinpoint that critical error message or performance bottleneck? You're not alone. Modern systems generate vast amounts of data, and sifting through it can feel like searching for a needle in a digital haystack.</p>
+                <p>Enter <strong>Piped Processing Language (PPL)</strong> – your new superpower for log analytics and observability within OpenSearch. PPL offers a simple, intuitive, pipe-based syntax (think Linux command line) that lets you chain commands together to progressively filter, transform, and analyze your data.</p>
+                <p>This guide is designed specifically for <strong>observability users</strong> like you – developers, DevOps engineers, SREs – who need to get answers from logs *fast*. Forget complex query DSLs; PPL lets you explore and diagnose issues efficiently. By the end of this article, you'll be equipped to write powerful PPL queries to tackle your toughest observability challenges.</p>
+                <p>Let's dive in!</p>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 The PPL Toolkit: Core Concepts</h2>
+                <p>PPL works like a pipeline. You start with a data source and then pass the data through a series of commands using the pipe symbol (<code>|</code>). Each command processes the data from the previous step and passes it to the next.</p>
+                <div class="code-block"><pre>search source=&lt;your-index&gt; | command1 [options] | command2 [options] | ...</pre></div>
+                <ul>
+                    <li><strong><code>search source=&lt;your-index&gt;</code></strong>: This is always the starting point. It specifies the OpenSearch index (or index pattern) containing your log data. You can omit the <code>search</code> keyword itself and just use <code>source=...</code>.</li>
+                    <li><strong><code>|</code> (Pipe)</strong>: This symbol connects commands, sending the output of the left command as input to the right command.</li>
+                    <li><strong>Commands</strong>: These perform specific actions like filtering (<code>where</code>), selecting fields (<code>fields</code>), aggregating (<code>stats</code>), etc.</li>
+                    <li><strong>Arguments/Options</strong>: Most commands take arguments or options to control their behavior.</li>
+                </ul>
+                 <p>Think of it like building with LEGOs – each command is a block, and you connect them with pipes to build your desired query.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>🛠️ Essential Commands for Log Analysis</h2>
+                <p>Let's explore the PPL commands most crucial for observability tasks.</p>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>where</code>: Filtering the Noise</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>The <code>where</code> command is your primary tool for filtering logs based on conditions. It keeps only the log entries where the specified expression evaluates to true.</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Find logs with a specific status code (e.g., errors).</li>
+                            <li>Isolate logs from a particular service or host.</li>
+                            <li>Filter logs within a specific time range (using date/time functions).</li>
+                            <li>Search for logs containing specific keywords or patterns.</li>
+                        </ul>
+                        <p><strong>Example:</strong> Find all error logs (status code >= 500) from the <code>weblogs</code> index.</p>
+                        <div class="code-block"><pre>source=weblogs | where status >= 500</pre></div>
+                        <p><strong>Example:</strong> Find logs for a specific user ID.</p>
+                        <div class="code-block"><pre>source=app_logs | where userID = 'user-123'</pre></div>
+                         <p><strong>Example:</strong> Find logs containing the word "timeout" (case-insensitive using <code>like</code>).</p>
+                         <div class="code-block"><pre>source=service_logs | where message like '%timeout%'</pre></div>
+                         <p>You can combine conditions using <code>AND</code>, <code>OR</code>, and parentheses <code>()</code>.</p>
+                         <div class="code-block"><pre>source=api_gateway | where (verb = 'POST' AND path like '/users/%') OR response_time_ms > 1000</pre></div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>fields</code>: Selecting What Matters</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>Often, log entries have many fields, but you only need a few for your analysis. The <code>fields</code> command lets you select specific fields to keep or remove.</p>
+                        <ul>
+                            <li><code>fields field1, field2, ...</code>: Keeps only the specified fields.</li>
+                            <li><code>fields - field_to_remove, ...</code>: Removes the specified fields, keeping everything else.</li>
+                        </ul>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Focus on relevant data points (e.g., timestamp, message, status code).</li>
+                            <li>Reduce the amount of data transferred and displayed.</li>
+                            <li>Prepare data for subsequent commands like <code>stats</code>.</li>
+                        </ul>
+                        <p><strong>Example:</strong> Show only the timestamp, severity, and message for error logs.</p>
+                        <div class="code-block"><pre>source=system_logs | where severity = 'ERROR' | fields timestamp, severity, message</pre></div>
+                        <p><strong>Example:</strong> Show all fields *except* verbose debugging information.</p>
+                        <div class="code-block"><pre>source=app_logs | fields - debug_info, internal_trace_id</pre></div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>stats</code>: Aggregating Insights</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>The <code>stats</code> command is incredibly powerful for summarizing data. It allows you to calculate aggregate statistics like counts, averages, sums, minimums, and maximums, often grouped by specific fields.</p>
+                        <p><strong>Common Aggregation Functions:</strong></p>
+                        <ul>
+                            <li><code>count()</code>: Total number of log entries.</li>
+                            <li><code>count(field)</code>: Number of entries where <code>field</code> is not null/missing.</li>
+                            <li><code>distinct_count(field)</code> or <code>dc(field)</code>: Number of unique values in <code>field</code>.</li>
+                            <li><code>avg(numeric_field)</code>: Average value.</li>
+                            <li><code>sum(numeric_field)</code>: Sum of values.</li>
+                            <li><code>min(numeric_field)</code>: Minimum value.</li>
+                            <li><code>max(numeric_field)</code>: Maximum value.</li>
+                            <li><code>percentile(numeric_field, N)</code>: Nth percentile value (e.g., <code>percentile(latency, 95)</code> for p95 latency).</li>
+                            <li><code>take(field, N)</code>: Returns a list of up to N sample values for the field (useful for seeing examples within a group).</li>
+                        </ul>
+                        <p><strong>Grouping with <code>by</code>:</strong> Use the <code>by</code> clause to group results before aggregating.</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Count errors per service.</li>
+                            <li>Calculate average response time per API endpoint.</li>
+                            <li>Find the maximum memory usage per host.</li>
+                            <li>Count unique users experiencing a specific error.</li>
+                            <li>Calculate p90/p99 latencies.</li>
+                        </ul>
+                        <p><strong>Example:</strong> Count the number of logs for each severity level.</p>
+                        <div class="code-block"><pre>source=system_logs | stats count() by severity</pre></div>
+                        <div class="output-block"><pre>severity | count()
+---------|--------
+INFO     | 15023
+WARN     | 876
+ERROR    | 152</pre></div>
+                        <p><strong>Example:</strong> Calculate the average and p95 response time for each API path.</p>
+                        <div class="code-block"><pre>source=api_gateway | stats avg(response_time_ms), percentile(response_time_ms, 95) as p95_latency by path</pre></div>
+                         <div class="output-block"><pre>path           | avg(response_time_ms) | p95_latency
+---------------|-----------------------|------------
+/users         | 55.2                  | 120.5
+/products      | 110.8                 | 250.0
+/orders        | 85.1                  | 180.7</pre></div>
+                         <p><strong>Time Bucketing with <code>span</code>:</strong> You can group by time intervals using <code>span(time_field, interval)</code>.</p>
+                         <p><strong>Example:</strong> Count errors every 5 minutes.</p>
+                         <div class="code-block"><pre>source=weblogs | where status >= 500 | stats count() by span(timestamp, 5m) as time_bucket</pre></div>
+                         <div class="output-block"><pre>time_bucket           | count()
+----------------------|--------
+2025-04-22 10:00:00   | 5
+2025-04-22 10:05:00   | 12
+2025-04-22 10:10:00   | 8</pre></div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>sort</code>: Ordering Your Results</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>The <code>sort</code> command arranges your results based on one or more fields.</p>
+                        <ul>
+                            <li><code>sort field</code>: Sorts by <code>field</code> in ascending order (default).</li>
+                            <li><code>sort +field</code>: Explicitly ascending.</li>
+                            <li><code>sort -field</code>: Sorts by <code>field</code> in descending order.</li>
+                            <li><code>sort field1, -field2</code>: Sorts by <code>field1</code> ascending, then <code>field2</code> descending.</li>
+                        </ul>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>View logs chronologically (oldest or newest first).</li>
+                            <li>List errors by frequency (after a <code>stats count()</code>).</li>
+                            <li>Find the slowest requests.</li>
+                        </ul>
+                        <p><strong>Example:</strong> Show the 5 slowest API requests.</p>
+                        <div class="code-block"><pre>source=api_gateway | sort - response_time_ms | head 5 | fields timestamp, path, response_time_ms</pre></div>
+                        <p><strong>Example:</strong> Show error counts per service, highest count first.</p>
+                        <div class="code-block"><pre>source=service_logs | where level='ERROR' | stats count() as error_count by service | sort - error_count</pre></div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>parse</code> & <code>grok</code>: Extracting Structure from Chaos</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>Logs often contain valuable information within unstructured message strings (e.g., "User 'admin' logged in from IP 192.168.1.100"). <code>parse</code> (using regex) and <code>grok</code> (using predefined patterns) let you extract these pieces into new, structured fields.</p>
+                        <p><strong><code>parse</code> Syntax:</strong> <code>parse &lt;field_to_parse&gt; '&lt;regex_pattern_with_named_groups&gt;'</code></p>
+                        <p><strong><code>grok</code> Syntax:</strong> <code>grok &lt;field_to_parse&gt; '&lt;grok_pattern&gt;'</code></p>
+                        <p>Grok often uses predefined patterns like <code>%{IP:client_ip}</code>, <code>%{NUMBER:status_code}</code>, <code>%{TIMESTAMP_ISO8601:log_time}</code>. You can find many common patterns online.</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Extract user IDs, IP addresses, status codes, durations, etc., from log messages.</li>
+                            <li>Turn unstructured data into fields you can filter, aggregate, and sort.</li>
+                        </ul>
+                        <p><strong>Example (parse):</strong> Extract IP address from an Nginx log message.</p>
+                        <div class="code-block"><pre>source=nginx_logs | parse message '(?&lt;client_ip&gt;\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}) -.*' | fields client_ip, message</pre></div>
+                        <p><strong>Example (grok):</strong> Parse a standard Apache common log format message.</p>
+                        <div class="code-block"><pre>source=apache_logs | grok message '%{COMMONAPACHELOG:apache_data}' | fields apache_data.clientip, apache_data.verb, apache_data.request, apache_data.response</pre></div>
+                        <p><em>Note: After parsing, the extracted fields (like <code>apache_data.clientip</code>) can be used in subsequent commands.</em></p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0"><code>eval</code>: Calculating New Fields</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>The <code>eval</code> command lets you create new fields based on calculations or transformations of existing fields.</p>
+                        <p><strong>Use Cases:</strong></p>
+                        <ul>
+                            <li>Convert units (e.g., milliseconds to seconds).</li>
+                            <li>Calculate durations (e.g., end_time - start_time).</li>
+                            <li>Concatenate strings.</li>
+                            <li>Apply mathematical or string functions.</li>
+                            <li>Create conditional fields (using functions like <code>if()</code>).</li>
+                        </ul>
+                        <p><strong>Example:</strong> Convert response time from milliseconds to seconds.</p>
+                        <div class="code-block"><pre>source=api_gateway | eval response_sec = response_time_ms / 1000 | fields path, response_sec</pre></div>
+                        <p><strong>Example:</strong> Create a full endpoint string.</p>
+                        <div class="code-block"><pre>source=service_logs | eval endpoint = concat(http_method, ' ', request_path) | fields endpoint, status</pre></div>
+                        <p><strong>Example:</strong> Categorize latency.</p>
+                        <div class="code-block"><pre>source=api_gateway | eval latency_category = if(response_time_ms > 1000, "SLOW", if(response_time_ms > 500, "MEDIUM", "FAST")) | fields path, latency_category</pre></div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <h3 class="!mt-0 !mb-0">Other Handy Commands</h3>
+                        <span class="arrow text-xl font-bold text-gray-600">▶</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong><code>dedup &lt;field&gt;</code></strong>: Removes duplicate rows based on the value(s) in the specified field(s). Useful for finding unique error messages or unique user sessions.
+                                <div class="code-block"><pre>source=error_logs | dedup error_signature | fields error_signature, timestamp</pre></div>
+                            </li>
+                             <li><strong><code>rename &lt;old_name&gt; AS &lt;new_name&gt;</code></strong>: Renames a field. Helpful for clarity or avoiding naming conflicts.
+                                <div class="code-block"><pre>source=app_logs | rename user_identifier AS userID | fields userID, action</pre></div>
+                            </li>
+                             <li><strong><code>head &lt;N&gt;</code></strong>: Returns the first N results. Often used after <code>sort</code>.
+                                <div class="code-block"><pre>source=system_logs | sort - timestamp | head 10</pre></div>
+                            </li>
+                            <li><strong><code>rare &lt;field&gt; [by &lt;group_field&gt;]</code></strong>: Finds the least frequent values in a field, optionally grouped by another field. Good for spotting unusual events.
+                                <div class="code-block"><pre>source=security_logs | rare user_agent by username</pre></div>
+                            </li>
+                            <li><strong><code>top &lt;N&gt; &lt;field&gt; [by &lt;group_field&gt;]</code></strong>: Finds the top N most frequent values in a field, optionally grouped. Ideal for identifying common errors or busiest services.
+                                <div class="code-block"><pre>source=weblogs | where status >= 500 | top 5 request_path</pre></div>
+                            </li>
+                             <li><strong><code>describe &lt;index_name&gt;</code></strong>: Shows metadata about an index, including field names and their data types. Essential for understanding what fields are available to query. Can only be the first command.
+                                <div class="code-block"><pre>describe my_log_index</pre></div>
+                                You can pipe the output to other commands like <code>where</code> or <code>fields</code> to filter the metadata itself:
+                                <div class="code-block"><pre>describe my_log_index | where TYPE_NAME = 'long' | fields COLUMN_NAME</pre></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="content-section">
+                <h2>🧩 Putting It All Together: Complex Queries</h2>
+                <p>The real power of PPL comes from chaining these commands. Let's build a query step-by-step to find the top 3 API endpoints with the highest average latency for POST requests, excluding health checks.</p>
+
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><strong>Start with the source:</strong>
+                        <div class="code-block"><pre>source=api_gateway</pre></div>
+                    </li>
+                    <li><strong>Filter for POST requests and exclude health checks:</strong>
+                        <div class="code-block"><pre>source=api_gateway
+| where verb = 'POST' AND path != '/health'</pre></div>
+                    </li>
+                    <li><strong>Calculate average latency per path:</strong>
+                         <div class="code-block"><pre>source=api_gateway
+| where verb = 'POST' AND path != '/health'
+| stats avg(response_time_ms) as avg_latency by path</pre></div>
+                    </li>
+                    <li><strong>Sort by average latency (highest first):</strong>
+                         <div class="code-block"><pre>source=api_gateway
+| where verb = 'POST' AND path != '/health'
+| stats avg(response_time_ms) as avg_latency by path
+| sort - avg_latency</pre></div>
+                    </li>
+                    <li><strong>Take the top 3:</strong>
+                         <div class="code-block"><pre>source=api_gateway
+| where verb = 'POST' AND path != '/health'
+| stats avg(response_time_ms) as avg_latency by path
+| sort - avg_latency
+| head 3</pre></div>
+                    </li>
+                     <li><strong>Select final fields (optional, for clarity):</strong>
+                         <div class="code-block"><pre>source=api_gateway
+| where verb = 'POST' AND path != '/health'
+| stats avg(response_time_ms) as avg_latency by path
+| sort - avg_latency
+| head 3
+| fields path, avg_latency</pre></div>
+                    </li>
+                </ol>
+                <p>See how each pipe refines the data, leading you to the specific insight you need?</p>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ You've Got the Power!</h2>
+                <p>Congratulations! You've taken a big step towards mastering PPL for observability. You now understand:</p>
+                <ul>
+                    <li>The core pipe-based syntax of PPL.</li>
+                    <li>Essential commands like <code>search</code>, <code>where</code>, <code>fields</code>, <code>stats</code>, <code>sort</code>, <code>parse</code>, <code>eval</code>, and <code>describe</code>.</li>
+                    <li>How to chain commands to build complex, targeted queries for log analysis.</li>
+                </ul>
+                <p>The best way to become truly proficient is to <strong>practice</strong>. Start applying these commands to your own logs. Experiment, explore, and see what insights you can uncover.</p>
+                <p>With PPL in your observability toolkit, you're better equipped than ever to quickly diagnose issues, understand system behavior, and keep your services running smoothly. Happy querying!</p>
+            </section>
+        </article>
+
+    </div>
+
+    <script>
+        // Basic script for collapsibles
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('.arrow');
+                // Toggle content visibility
+                content.classList.toggle('open');
+                // Toggle arrow direction
+                arrow.classList.toggle('down');
+
+                // Optional: Close other open sections (accordion behavior)
+                // document.querySelectorAll('.collapsible-content.open').forEach(openContent => {
+                //     if (openContent !== content) {
+                //         openContent.classList.remove('open');
+                //         openContent.previousElementSibling.querySelector('.arrow').classList.remove('down');
+                //     }
+                // });
+            });
+        });
+    </script>
+
+</body>
+</html>
